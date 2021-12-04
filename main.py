@@ -30,12 +30,12 @@ game_over = 0
 #шрифт
 font = pygame.font.SysFont('Times New Roman', 26)
 
-red = (255, 0, 0)
-green = (0, 255, 0)
+red = (174, 67, 30)
+green = (233, 200, 145)
 black = (0,0,0)
 white = (255,255,255)
 blue = (0,0,255)
-background = (72,76,81)
+background = (0,0,81)
 button_inactive = (99,105,114)
 button_active = (84,89,96)
 #изображения
@@ -66,7 +66,6 @@ class button_main():
         self.text = text
 
     def draw(self, win, outline=None):
-        # Call this method to draw the button on the screen
         if outline:
             pygame.draw.rect(win, outline, (self.x - 2, self.y - 2, self.width + 4, self.height + 4), 0)
 
@@ -78,18 +77,18 @@ class button_main():
             win.blit(text, (self.x + (self.width / 2 - text.get_width() / 2), self.y + (self.height / 2 - text.get_height() / 2)))
 
     def isOver(self, pos):
-        # Pos is the mouse position or a tuple of (x,y) coordinates
+        
         if pos[0] > self.x and pos[0] < self.x + self.width:
             if pos[1] > self.y and pos[1] < self.y + self.height:
                 return True
 
         return False
 
-greenButton = button_main(green , 280, 190, 250, 100, "Start")
+greenButton = button_main(green, 280, 190, 250, 100, "Start")
 redButton = button_main(red, 280, 310, 250, 100, "Quit")
 
 def redrawMenuWindow():
-    screen.fill((0, 180, 210))
+    screen.fill((138, 134, 53))
     greenButton.draw(screen, (0, 0, 0))
     redButton.draw(screen, (0, 0, 0))
 
@@ -112,7 +111,7 @@ def draw_panel():
         draw_text(f'{i.name} HP: {i.hp}', font, red, 550, (screen_height - bottom_panel + 10) + count * 60)
 
 
-# fighter class
+#БОЕЦ
 class Fighter():
     def __init__(self, x, y, name, max_hp, strength, potions):
         self.name = name
@@ -124,30 +123,30 @@ class Fighter():
         self.alive = True
         self.animation_list = []
         self.frame_index = 0
-        self.action = 0  # 0:idle, 1:attack, 2:hurt, 3:dead
+        self.action = 0  # 0:анимация, 1:атака, 2:ранен, 3:умер
         self.update_time = pygame.time.get_ticks()
-        # load idle images
+        # анимация
         temp_list = []
         for i in range(8):
             img = pygame.image.load(f'img/{self.name}/Idle/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # load attack images
+        # атака
         temp_list = []
         for i in range(8):
             img = pygame.image.load(f'img/{self.name}/Attack/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # load hurt images
+        # ранен
         temp_list = []
         for i in range(3):
             img = pygame.image.load(f'img/{self.name}/Hurt/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # load death images
+        # умер
         temp_list = []
         for i in range(10):
             img = pygame.image.load(f'img/{self.name}/Death/{i}.png')
@@ -160,14 +159,12 @@ class Fighter():
 
     def update(self):
         animation_cooldown = 100
-        # handle animation
-        # update image
+        # постоянное обновление
         self.image = self.animation_list[self.action][self.frame_index]
-        # check if enough time has passed since the last update
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.update_time = pygame.time.get_ticks()
             self.frame_index += 1
-        # if the animation has run out then reset back to the start
+
         if self.frame_index >= len(self.animation_list[self.action]):
             if self.action == 3:
                 self.frame_index = len(self.animation_list[self.action]) - 1
@@ -175,38 +172,35 @@ class Fighter():
                 self.idle()
 
     def idle(self):
-        # set variables to idle animation
         self.action = 0
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
     def attack(self, target):
-        # deal damage to enemy
+        # дамаг
         rand = random.randint(-5, 5)
         damage = self.strength + rand
         target.hp -= damage
-        # run enemy hurt animation
         target.hurt()
-        # check if target has died
+        # проверка смерти врага
         if target.hp < 1:
             target.hp = 0
             target.alive = False
             target.death()
         damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), red)
         damage_text_group.add(damage_text)
-        # set variables to attack animation
         self.action = 1
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
     def hurt(self):
-        # set variables to hurt animation
+        # анимация ранен
         self.action = 2
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
     def death(self):
-        # set variables to death animation
+        # анимация умер
         self.action = 3
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
@@ -231,9 +225,9 @@ class HealthBar():
         self.max_hp = max_hp
 
     def draw(self, hp):
-        # update with new health
+        # обновление хп
         self.hp = hp
-        # calculate health ratio
+
         ratio = self.hp / self.max_hp
         pygame.draw.rect(screen, red, (self.x, self.y, 150, 20))
         pygame.draw.rect(screen, green, (self.x, self.y, 150 * ratio, 20))
@@ -248,9 +242,8 @@ class DamageText(pygame.sprite.Sprite):
         self.counter = 0
 
     def update(self):
-        # move damage text up
+        #отрисовка текста дамага
         self.rect.y -= 1
-        # delete the text after a few seconds
         self.counter += 1
         if self.counter > 30:
             self.kill()
@@ -438,11 +431,11 @@ while run:
                 if greenButton.isOver(pos):
                     greenButton.color = (105, 105, 105)
                 else:
-                    greenButton.color = (0, 255, 0)
+                    greenButton.color = (233, 200, 145)
                 if redButton.isOver(pos):
                     redButton.color = (105, 105, 105)
                 else:
-                    redButton.color = (255, 0, 0)
+                    redButton.color = (174, 67, 30)
 
 
 pygame.quit()
