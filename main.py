@@ -8,7 +8,7 @@ pygame.init()
 clock = pygame.time.Clock()
 fps = 60
 
-#окно-игра
+# game window
 bottom_panel = 150
 screen_width = 800
 screen_height = 400 + bottom_panel
@@ -16,7 +16,6 @@ screen_height = 400 + bottom_panel
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('RPGbySW1pr0g')
 
-#переменные для игры
 current_fighter = 1
 total_fighters = 3
 action_cooldown = 0
@@ -27,7 +26,6 @@ potion_effect = 15
 clicked = False
 game_over = 0
 
-#шрифт
 font = pygame.font.SysFont('Times New Roman', 26)
 
 red = (174, 67, 30)
@@ -38,7 +36,6 @@ blue = (0,0,255)
 background = (0,0,81)
 button_inactive = (99,105,114)
 button_active = (84,89,96)
-#изображения
 
 background_img = pygame.image.load('img/Background/background.png').convert_alpha()
 
@@ -51,9 +48,6 @@ victory_img = pygame.image.load('img/Icons/victory.png').convert_alpha()
 defeat_img = pygame.image.load('img/Icons/defeat.png').convert_alpha()
 
 sword_img = pygame.image.load('img/Icons/sword.png').convert_alpha()
-
-
-#меню
 
 
 class button_main():
@@ -111,7 +105,6 @@ def draw_panel():
         draw_text(f'{i.name} HP: {i.hp}', font, red, 550, (screen_height - bottom_panel + 10) + count * 60)
 
 
-#БОЕЦ
 class Fighter():
     def __init__(self, x, y, name, max_hp, strength, potions):
         self.name = name
@@ -125,28 +118,28 @@ class Fighter():
         self.frame_index = 0
         self.action = 0  # 0:анимация, 1:атака, 2:ранен, 3:умер
         self.update_time = pygame.time.get_ticks()
-        # анимация
+        # anim
         temp_list = []
         for i in range(8):
             img = pygame.image.load(f'img/{self.name}/Idle/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # атака
+        # attack
         temp_list = []
         for i in range(8):
             img = pygame.image.load(f'img/{self.name}/Attack/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # ранен
+        # hurt
         temp_list = []
         for i in range(3):
             img = pygame.image.load(f'img/{self.name}/Hurt/{i}.png')
             img = pygame.transform.scale(img, (img.get_width() * 3, img.get_height() * 3))
             temp_list.append(img)
         self.animation_list.append(temp_list)
-        # умер
+        # die
         temp_list = []
         for i in range(10):
             img = pygame.image.load(f'img/{self.name}/Death/{i}.png')
@@ -159,7 +152,7 @@ class Fighter():
 
     def update(self):
         animation_cooldown = 100
-        # постоянное обновление
+        # refreshing
         self.image = self.animation_list[self.action][self.frame_index]
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.update_time = pygame.time.get_ticks()
@@ -177,12 +170,12 @@ class Fighter():
         self.update_time = pygame.time.get_ticks()
 
     def attack(self, target):
-        # дамаг
+        # damage
         rand = random.randint(-5, 5)
         damage = self.strength + rand
         target.hp -= damage
         target.hurt()
-        # проверка смерти врага
+        # check enemy die
         if target.hp < 1:
             target.hp = 0
             target.alive = False
@@ -194,13 +187,13 @@ class Fighter():
         self.update_time = pygame.time.get_ticks()
 
     def hurt(self):
-        # анимация ранен
+        # hurt anim
         self.action = 2
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
     def death(self):
-        # анимация умер
+        # die anim
         self.action = 3
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
@@ -225,7 +218,7 @@ class HealthBar():
         self.max_hp = max_hp
 
     def draw(self, hp):
-        # обновление хп
+        # hp updating
         self.hp = hp
 
         ratio = self.hp / self.max_hp
@@ -242,7 +235,7 @@ class DamageText(pygame.sprite.Sprite):
         self.counter = 0
 
     def update(self):
-        #отрисовка текста дамага
+        # damage text drawing
         self.rect.y -= 1
         self.counter += 1
         if self.counter > 30:
@@ -278,24 +271,24 @@ while run:
 
         draw_bg()
 
-        # панелька
+        # panel
         draw_panel()
         knight_health_bar.draw(knight.hp)
         bandit1_health_bar.draw(bandit1.hp)
         bandit2_health_bar.draw(bandit2.hp)
 
-        # бойцы
+        # fighters
         knight.update()
         knight.draw()
         for bandit in bandit_list:
             bandit.update()
             bandit.draw()
 
-        # текст дамага
+        # damage text
         damage_text_group.update()
         damage_text_group.draw(screen)
 
-        # контролим атаку
+        # attack control
         attack = False
         potion = False
         target = None
@@ -344,7 +337,7 @@ while run:
             else:
                 game_over = -1
 
-            #враг
+            # enemy
             for count, bandit in enumerate(bandit_list):
                 if current_fighter == 2 + count:
                     if bandit.alive == True:
@@ -383,7 +376,7 @@ while run:
         if alive_bandits == 0:
             game_over = 1
 
-        # проверка конца игры
+        # check game ending
         if game_over != 0:
             if game_over == 1:
                 screen.blit(victory_img, (250, 50))
