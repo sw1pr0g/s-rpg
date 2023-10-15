@@ -14,7 +14,7 @@ class Button():
 
 		pos = pygame.mouse.get_pos()
 
-		#проверка клика
+		# click check
 		if self.rect.collidepoint(pos):
 			if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
 				action = True
@@ -23,7 +23,7 @@ class Button():
 		if pygame.mouse.get_pressed()[0] == 0:
 			self.clicked = False
 
-		#отрисовка
+		# drawing
 		self.surface.blit(self.image, (self.rect.x, self.rect.y))
 
 		return action
