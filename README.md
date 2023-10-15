@@ -6,6 +6,6 @@ Simple RPG step game made on Python with pygame
 ## How to start and play:
 
 1. Clone repository
-2. Install the pygame library
+2. Install the ```pygame``` library
 3. Run ```main.py``` file
 4. Enjoy the game:blush:
