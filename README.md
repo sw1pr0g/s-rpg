@@ -1,9 +1,9 @@
 # s-rpg: Simple RPG Step Game
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+[![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
 [![License](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
 
-Simple RPG step game made on Python with ```pygame``` library
+Simple RPG step game made on [Python](https://www.python.org/) with ```pygame``` library
 
 ## How to start and play:
 
